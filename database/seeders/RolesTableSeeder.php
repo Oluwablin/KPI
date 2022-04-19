@@ -25,9 +25,9 @@ class RolesTableSeeder extends Seeder
                 'level'       => 5,
             ],
             [
-                'name'        => 'User',
-                'slug'        => 'user',
-                'description' => 'User Role',
+                'name'        => 'Employee',
+                'slug'        => 'employee',
+                'description' => 'Employee Role',
                 'level'       => 1,
             ],
             [

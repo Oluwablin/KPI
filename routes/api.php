@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +24,7 @@ Route::group(["prefix" => "v1"], function () {
 
 
     // authentication
-    Route::group(['prefix' => 'auth'], function () {
+    Route::group(['prefix' => 'auth', 'namespace' => 'App\Http\Controllers'], function () {
 
         Route::post('signup', 'v1\Auth\RegisterController@register');
         Route::post('login', 'v1\Auth\LoginController@login');
@@ -31,7 +32,7 @@ Route::group(["prefix" => "v1"], function () {
     });
 
     //Authenticated Routes
-    Route::group(['middleware' => 'auth:api'], function () {
+    Route::group(['middleware' => 'auth:api', 'namespace' => 'App\Http\Controllers'], function () {
 
         //Admin
         Route::group(['prefix' => 'admin'], function () {

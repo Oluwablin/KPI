@@ -13,7 +13,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $userRole = config('roles.models.role')::where('name', '=', 'User')->first();
+        $userRole = config('roles.models.role')::where('name', '=', 'Employee')->first();
         $adminRole = config('roles.models.role')::where('name', '=', 'Admin')->first();
         $permissions = config('roles.models.permission')::all();
 
@@ -23,9 +23,11 @@ class UsersTableSeeder extends Seeder
          */
         if (config('roles.models.defaultUser')::where('email', '=', 'admin@admin.com')->first() === null) {
             $newUser = config('roles.models.defaultUser')::create([
-                'name'     => 'Admin',
+                'firstname'     => 'Admin',
+                'lastname'     => 'Admin',
                 'email'    => 'admin@admin.com',
                 'password' => bcrypt('password'),
+                'is_verified' => 1,
             ]);
 
             $newUser->attachRole($adminRole);
@@ -36,9 +38,11 @@ class UsersTableSeeder extends Seeder
 
         if (config('roles.models.defaultUser')::where('email', '=', 'user@user.com')->first() === null) {
             $newUser = config('roles.models.defaultUser')::create([
-                'name'     => 'User',
+                'firstname'     => 'Default',
+                'lastname'     => 'User',
                 'email'    => 'user@user.com',
                 'password' => bcrypt('password'),
+                'is_verified' => 1,
             ]);
 
             $newUser->attachRole($userRole);

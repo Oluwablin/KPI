@@ -19,27 +19,51 @@ class PermissionsTableSeeder extends Seeder
          */
         $Permissionitems = [
             [
-                'name'        => 'Can View Users',
-                'slug'        => 'view.users',
-                'description' => 'Can view users',
+                'name'        => 'Can View Employees',
+                'slug'        => 'view.employees',
+                'description' => 'Can view employees',
                 'model'       => 'Permission',
             ],
             [
-                'name'        => 'Can Create Users',
-                'slug'        => 'create.users',
-                'description' => 'Can create new users',
+                'name'        => 'Can Create Employees',
+                'slug'        => 'create.employees',
+                'description' => 'Can create new employees',
                 'model'       => 'Permission',
             ],
             [
-                'name'        => 'Can Edit Users',
-                'slug'        => 'edit.users',
-                'description' => 'Can edit users',
+                'name'        => 'Can Edit Employees',
+                'slug'        => 'edit.employees',
+                'description' => 'Can edit employees',
                 'model'       => 'Permission',
             ],
             [
-                'name'        => 'Can Delete Users',
-                'slug'        => 'delete.users',
-                'description' => 'Can delete users',
+                'name'        => 'Can Delete Employees',
+                'slug'        => 'delete.employees',
+                'description' => 'Can delete employees',
+                'model'       => 'Permission',
+            ],
+            [
+                'name'        => 'Can View Reviews',
+                'slug'        => 'view.reviews',
+                'description' => 'Can view reviews',
+                'model'       => 'Permission',
+            ],
+            [
+                'name'        => 'Can Create Reviews',
+                'slug'        => 'create.reviews',
+                'description' => 'Can create new reviews',
+                'model'       => 'Permission',
+            ],
+            [
+                'name'        => 'Can Edit Reviews',
+                'slug'        => 'edit.reviews',
+                'description' => 'Can edit reviews',
+                'model'       => 'Permission',
+            ],
+            [
+                'name'        => 'Can Assign Employees To Participate in Reviews',
+                'slug'        => 'assign.employees',
+                'description' => 'Can aasign employees to participate in reviews',
                 'model'       => 'Permission',
             ],
         ];
