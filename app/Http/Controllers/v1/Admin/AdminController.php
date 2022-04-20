@@ -21,11 +21,13 @@ class AdminController extends Controller
     public function listAllAdmins()
     {
         $admins = User::whereHas(
-            'roles', function($q){
+            'roles',
+            function ($q) {
                 $q->where('name', 'Admin');
-            })->get();
+            }
+        )->get();
 
-        if(!$admins){
+        if (!$admins) {
             return response()->json([
                 'success' => false,
                 'message' => 'No record found',
@@ -49,11 +51,13 @@ class AdminController extends Controller
     public function listAllEmployees()
     {
         $employees = User::whereHas(
-            'roles', function($q){
+            'roles',
+            function ($q) {
                 $q->where('name', 'Employee');
-            })->get();
+            }
+        )->get();
 
-        if(!$employees){
+        if (!$employees) {
             return response()->json([
                 'success' => false,
                 'message' => 'No record found',
@@ -103,7 +107,15 @@ class AdminController extends Controller
                 ]
             );
 
-            if($user){
+            if ($user) {
+                $employee = Employee::create(
+                    [
+                        "firstname" => $user->firstname,
+                        "lastname" => $user->lastname,
+                        "user_id" => $user->id,
+                    ]
+                );
+
                 $permissions = config('roles.models.permission')::all();
                 if (isset($role) && $role === "admin") {
                     $userRole = User::isAdmin;
@@ -117,12 +129,12 @@ class AdminController extends Controller
                         $user->attachRole($userRole);
                     }
                 }
-               
+
                 DB::commit();
                 return response()->json([
                     'success' => true,
                     'message' => 'Employee created Successfully!',
-                    'data' => $user
+                    'data' => [$user, $employee]
                 ], 201);
             }
 
@@ -131,7 +143,6 @@ class AdminController extends Controller
                 'message' => 'Error, Employee could not be created',
                 'data' => null,
             ], 500);
-
         } catch (\Throwable $th) {
 
             DB::rollback();
@@ -185,9 +196,80 @@ class AdminController extends Controller
      * @return \Illuminate\Http\Response
      * Assign an Employee for Performance Review
      */
-    public function assignEmployee($id)
+    public function assignEmployee(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'user_id'   => 'required',
+            'employee_id'    => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $response = [];
+            foreach ($validator->messages()->toArray() as $key => $value) {
+                $obj = new \stdClass();
+                $obj->name = $key;
+                $obj->message = $value[0];
+                array_push($response, $obj);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => $response,
+                'data'    => 'null',
+            ], 422);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $user = User::where('id', $request->user_id)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User was not found',
+                    'data' => null
+                ], 404);
+            }
+
+            $employee = Employee::where('user_id', $user->id)->first();
+
+            if ($employee) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Employee cannot review themselves, choose another employee',
+                    'data' => null
+                ], 404);
+            }
+
+            $review_employee = Employee::where('id', $request->employee_id)->first();
+
+            if (!$review_employee) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Employee was not found',
+                    'data' => null
+                ], 404);
+            }
+
+            $review_employee->update([
+                'assignee' => $user->firstname . ' ' . $user->lastname
+            ]);
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Employee has been assigned to participate in review',
+                'data' => $user,
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+                'data' => null
+            ], 500);
+        }
     }
 
     /**
@@ -202,7 +284,7 @@ class AdminController extends Controller
         $user = User::find($request->user_id);
         if (!$user) {
             return response()->json([
-                'error' => true,
+                'success' => false,
                 'message' => 'Employee not found',
                 'data' => null
             ], 404);
@@ -211,7 +293,7 @@ class AdminController extends Controller
         $validator = Validator::make($request->all(), [
             'firstname'   => 'required|string|max:255',
             'lastname'    => 'required|string|max:255',
-            'email'       => 'required|string|email|max:255|unique:users,email,'.$request->user_id,
+            'email'       => 'required|string|email|max:255|unique:users,email,' . $request->user_id,
         ]);
 
         if ($validator->fails()) {
@@ -240,7 +322,18 @@ class AdminController extends Controller
 
             $user = User::where('id', $request->user_id)->first();
             $role = $request->role;
-            if($user){
+            if ($user) {
+                $employee = Employee::where('user_id', $request->user_id)->first();
+                if ($employee) {
+                    $employee->update(
+                        [
+                            "firstname" => $user->firstname,
+                            "lastname" => $user->lastname,
+                            "user_id" => $user->id,
+                        ]
+                    );
+                }
+
                 $permissions = config('roles.models.permission')::all();
                 if (isset($role) && $role === "admin") {
                     $userRole = User::isAdmin;
@@ -270,7 +363,6 @@ class AdminController extends Controller
                 'message' => 'Error, Employee could not be updated',
                 'data' => null,
             ], 500);
-
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->json([

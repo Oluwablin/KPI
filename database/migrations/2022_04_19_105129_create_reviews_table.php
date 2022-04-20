@@ -14,7 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('reviews', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
+            $table->string('feedback')->nullable();
+            $table->string('review')->nullable();
+            $table->boolean('is_submitted')->nullable()->default(false);
+            $table->unsignedInteger('employee_id');
+            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
             $table->timestamps();
         });
     }

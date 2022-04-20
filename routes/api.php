@@ -43,7 +43,7 @@ Route::group(["prefix" => "v1"], function () {
             Route::post('create/single/employee',                                   'v1\Admin\AdminController@store');
             Route::put('update/an/employee',                                        'v1\Admin\AdminController@update');
             Route::delete('remove/an/employee',                                     'v1\Admin\AdminController@destroy');
-            Route::post('assign/an/employee/{id}',                                  'v1\Admin\AdminController@assignEmployee');
+            Route::post('assign/an/employee',                                       'v1\Admin\AdminController@assignEmployee');
 
             //Performance Review
             Route::get('fetch/all/reviews',                                         'v1\Review\ReviewController@listAllReviews');
