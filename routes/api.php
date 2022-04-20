@@ -35,40 +35,44 @@ Route::group(["prefix" => "v1"], function () {
     Route::group(['middleware' => 'auth:api', 'namespace' => 'App\Http\Controllers'], function () {
 
         //Admin
-        Route::group(['prefix' => 'admin'], function () {
+        Route::group(['prefix' => 'admin', 'middleware' => ['role:admin']], function () {
 
-            Route::get('fetch/all/admin',                                           'v1\Admin\AdminController@listAllAdmins');
-            Route::get('fetch/a/admin/{id}',                                        'v1\Admin\AdminController@show');
-            Route::post('create/single/admin',                                      'v1\Admin\AdminController@store');
-            Route::post('update/a/admin/{id}',                                      'v1\Admin\AdminController@update');
-            Route::delete('delete/a/admin/{id}',                                    'v1\Admin\AdminController@destroy');
+            Route::get('fetch/all/admins',                                          'v1\Admin\AdminController@listAllAdmins');
+            Route::get('fetch/all/employees',                                       'v1\Admin\AdminController@listAllEmployees');
+            Route::get('fetch/an/employee/{id}',                                    'v1\Admin\AdminController@show');
+            Route::post('create/single/employee',                                   'v1\Admin\AdminController@store');
+            Route::put('update/an/employee',                                        'v1\Admin\AdminController@update');
+            Route::delete('remove/an/employee',                                     'v1\Admin\AdminController@destroy');
             Route::post('assign/an/employee/{id}',                                  'v1\Admin\AdminController@assignEmployee');
+
+            //Performance Review
+            Route::get('fetch/all/reviews',                                         'v1\Review\ReviewController@listAllReviews');
+            Route::get('fetch/a/review/{id}',                                       'v1\Review\ReviewController@show');
+            Route::post('create/single/review',                                     'v1\Review\ReviewController@store');
+            Route::post('update/a/review/{id}',                                     'v1\Review\ReviewController@update');
 
         });
 
         //Employee
         Route::group(['prefix' => 'employee'], function () {
 
-            Route::get('fetch/all/employee',                                        'v1\Employee\EmployeeController@listAllEmployees');
-            Route::get('fetch/a/employee/{id}',                                     'v1\Employee\EmployeeController@show');
-            Route::post('create/single/employee',                                   'v1\Employee\EmployeeController@store');
-            Route::post('update/a/employee/{id}',                                   'v1\Employee\EmployeeController@update');
-            Route::delete('delete/a/employee/{id}',                                 'v1\Employee\EmployeeController@destroy');
+            Route::get('fetch/reviews/for/feedback',                                'v1\Employee\EmployeeController@listReviewsForFeedback');
+            Route::post('feedback/for/a/review/{id}',                               'v1\Employee\EmployeeController@reviewFeedback');
 
         });
 
         //Review
-        Route::group(['prefix' => 'review'], function () {
+        // Route::group(['prefix' => 'review'], function () {
 
-            Route::get('fetch/all/review',                                          'v1\Review\ReviewController@listAllReviews');
-            Route::get('fetch/a/review/{id}',                                       'v1\Review\ReviewController@show');
-            Route::post('create/single/review',                                     'v1\Review\ReviewController@store');
-            Route::post('update/a/review/{id}',                                     'v1\Review\ReviewController@update');
-            Route::delete('delete/a/review/{id}',                                   'v1\Review\ReviewController@destroy');
-            Route::get('fetch/reviews/for/feedback',                                'v1\Review\ReviewController@listReviewsForFeedback');
-            Route::post('feedback/for/a/review/{id}',                               'v1\Review\ReviewController@reviewFeedback');
+        //     Route::get('fetch/all/reviews',                                         'v1\Review\ReviewController@listAllReviews');
+        //     Route::get('fetch/a/review/{id}',                                       'v1\Review\ReviewController@show');
+        //     Route::post('create/single/review',                                     'v1\Review\ReviewController@store');
+        //     Route::post('update/a/review/{id}',                                     'v1\Review\ReviewController@update');
+        //     Route::delete('delete/a/review/{id}',                                   'v1\Review\ReviewController@destroy');
+        //     Route::get('fetch/reviews/for/feedback',                                'v1\Review\ReviewController@listReviewsForFeedback');
+        //     Route::post('feedback/for/a/review/{id}',                               'v1\Review\ReviewController@reviewFeedback');
 
-        });
+        // });
 
     });
 

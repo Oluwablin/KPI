@@ -37,14 +37,29 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * Register the exception handling callbacks for the application.
+     * Render an exception into an HTTP response.
      *
-     * @return void
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $e
+     * @return \Illuminate\Http\Response
      */
-    public function register()
+    public function render($request, Throwable $e)
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        $userLevelCheck = $e instanceof \jeremykenedy\LaravelRoles\App\Exceptions\RoleDeniedException ||
+            $e instanceof \jeremykenedy\LaravelRoles\App\Exceptions\PermissionDeniedException ||
+            $e instanceof \jeremykenedy\LaravelRoles\App\Exceptions\LevelDeniedException;
+
+        if ($userLevelCheck) {
+
+            return response()->json([
+                'success' => false,
+                'message' =>  'Unauthorized.',
+                'data' => null
+            ], 403);
+
+            abort(403);
+        }
+
+        return parent::render($request, $e);
     }
 }

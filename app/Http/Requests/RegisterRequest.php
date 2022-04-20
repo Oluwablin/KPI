@@ -34,4 +34,22 @@ class RegisterRequest extends FormRequest
 
         return $rules;
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    // public function messages()
+    // {
+    //     return [
+    //         'firstname.required' => 'Firstname is required',
+    //         'lastname.required' => 'Lastname is required',
+    //         'email.required' => 'Email is required',
+    //         'password.required' => 'Password is required',
+    //         'role.required' => 'Role is required',
+    //         'email.unique' => 'Email already exists',
+    //         'password.min' => 'Password length must not be less than 6 characters',
+    //     ];
+    // }
 }
