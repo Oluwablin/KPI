@@ -16,8 +16,8 @@ class User extends Authenticatable implements JWTSubject
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoleAndPermission;
 
     // Values for user roles
-    const isEmployee = 1;
-    const isAdmin = 2;
+    const isEmployee = 2;
+    const isAdmin = 1;
 
     protected $with = ['roles'];
 

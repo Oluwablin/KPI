@@ -13,6 +13,7 @@ class LoginController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
+     * Login a User
      */
     public function login(LoginRequest $request)
     {
@@ -20,7 +21,7 @@ class LoginController extends Controller
 
         if (!$token = auth()->attempt($credentials)) {
             return response()->json([
-                'error' => true,
+                'success' => false,
                 'message' => 'Incorrect email or password',
                 'data' => null
             ]);
@@ -29,10 +30,12 @@ class LoginController extends Controller
         $data = [
             'accessToken' => $token,
             'tokenType' => 'Bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'user' => auth()->user(),
         ];
 
         return response()->json([
-            'error' => false,
+            'success' => true,
             'message' => 'You are logged in successfully',
             'data' => $data
         ]);
@@ -49,7 +52,7 @@ class LoginController extends Controller
         auth()->logout();
 
         return response()->json([
-            'error' => false,
+            'success' => true,
             'message' => 'Successfully logged out',
             'data' => null
         ]);

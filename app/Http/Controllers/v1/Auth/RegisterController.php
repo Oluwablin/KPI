@@ -16,6 +16,7 @@ class RegisterController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
+     * Register a user
      */
     public function register(RegisterRequest $request)
     {
@@ -24,18 +25,24 @@ class RegisterController extends Controller
         $data["password"] =  Hash::make($request->password);
         $role = $data["role"];
         unset($data["role"]);
+        $permissions = config('roles.models.permission')::all();
         try {
             $user = User::create($data);
 
             if (isset($role) && $role === "admin") {
                 $userRole = User::isAdmin;
+                if ($userRole) {
+                    $user->attachRole($userRole);
+                    $user->syncPermissions($permissions);
+                }
             } else {
                 $userRole = User::isEmployee;
+                if ($userRole) {
+                    $user->attachRole($userRole);
+                }
             }
 
-            if ($userRole) {
-                $user->attachRole($userRole);
-            }
+            
 
             if ($user->is_verified == 1) {
                 return response()->json([
